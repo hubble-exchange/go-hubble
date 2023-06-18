@@ -214,7 +214,6 @@ func (c *HubbleClient) CancelOrdersById(orderId common.Hash) error {
 		Salt:              orderDetails.Salt,
 		ReduceOnly:        orderDetails.ReduceOnly,
 	}
-	fmt.Println("order=", order)
 
 	return c.CancelOrders([]Order{order})
 }

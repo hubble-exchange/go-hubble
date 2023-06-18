@@ -34,7 +34,6 @@ func placeOrder(txOptions *bind.TransactOpts, order contracts.IOrderBookOrder) (
 		return orderHash, err
 	}
 
-	fmt.Println("placed order")
 	return orderHash, nil
 }
 
