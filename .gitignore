@@ -19,3 +19,8 @@
 
 # Go workspace file
 go.work
+
+# binaries
+go-hubble
+abigen
+

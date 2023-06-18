@@ -195,7 +195,7 @@ func (c *HubbleClient) CancelOrders(orders []Order) error {
 	return cancelOrder(txOpts, contractOrders)
 }
 
-func (c *HubbleClient) CancelOrdersById(orderId common.Hash) error {
+func (c *HubbleClient) CancelOrderById(orderId common.Hash) error {
 
 	if c.privateKey == nil {
 		return fmt.Errorf("private key is not set")

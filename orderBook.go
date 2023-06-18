@@ -1,7 +1,6 @@
 package hubble
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
