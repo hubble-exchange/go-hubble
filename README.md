@@ -1,7 +1,12 @@
-# go-hubble
-Go SDK for Hubble Exchange
+# Go SDK for Hubble Exchange
 
-Example usage:
+Requires RPC_ENDPOINT environment variable to be set
+
+```shell
+export RPC_ENDPOINT=https://candy-hubblenet-rpc.hubble.exchange/ext/bc/iKMFgo49o4X3Pd3UWUkmPwjKom3xZz3Vo6Y1kkwL2Ce6DZaPm/rpc
+```
+
+### Example usage:
 
 ```go
 import hubble "github.com/hubble-exchange/go-hubble"
