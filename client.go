@@ -10,8 +10,6 @@ import (
 	"math/big"
 	"math/rand"
 	"net/http"
-	"net/url"
-	"os"
 	"strconv"
 	"time"
 
@@ -35,22 +33,9 @@ type HubbleClient struct {
 
 func GetHubbleClient() *HubbleClient {
 	if hubbleClient == nil {
-		rpcHost := os.Getenv("HUBBLE_RPC_HOST")
-		if rpcHost == "" {
-			panic("HUBBLE_RPC_HOST environment variable not set")
-		}
-		blockchainID := os.Getenv("HUBBLE_BLOCKCHAIN_ID")
-		if rpcHost == "" {
-			panic("HUBBLE_BLOCKCHAIN_ID environment variable not set")
-		}
-		path := fmt.Sprintf("/ext/bc/%s/rpc", blockchainID)
-		rpcURL := url.URL{Scheme: "https", Host: rpcHost, Path: path}
-
-		path = fmt.Sprintf("/ext/bc/%s/ws", blockchainID)
-		websocketURL := url.URL{Scheme: "wss", Host: rpcHost, Path: path}
 		hubbleClient = &HubbleClient{
-			rpcEndpoint:       rpcURL.String(),
-			websocketEndpoint: websocketURL.String(),
+			rpcEndpoint:       getRPCEndpoint(),
+			websocketEndpoint: getWebSocketEndpoint(),
 		}
 
 	}

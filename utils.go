@@ -6,10 +6,17 @@ import (
 	"fmt"
 	"math"
 	"math/big"
+	"net/url"
+	"os"
 	"strconv"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
+)
+
+var (
+	rpcEndpoint       string
+	webSocketEndpoint string
 )
 
 func FloatToBigInt(float float64, scale int) *big.Int {
@@ -45,4 +52,39 @@ func getAddressFromPrivateKey(privateKey *ecdsa.PrivateKey) (common.Address, err
 	}
 	address := crypto.PubkeyToAddress(*publicKeyECDSA)
 	return address, nil
+}
+
+func getRPCEndpoint() string {
+	if rpcEndpoint == "" {
+		rpcHost := os.Getenv("HUBBLE_RPC_HOST")
+		if rpcHost == "" {
+			panic("HUBBLE_RPC_HOST environment variable not set")
+		}
+		blockchainID := os.Getenv("HUBBLE_BLOCKCHAIN_ID")
+		if rpcHost == "" {
+			panic("HUBBLE_BLOCKCHAIN_ID environment variable not set")
+		}
+		path := fmt.Sprintf("/ext/bc/%s/rpc", blockchainID)
+		rpcURL := url.URL{Scheme: "https", Host: rpcHost, Path: path}
+		rpcEndpoint = rpcURL.String()
+	}
+	return rpcEndpoint
+}
+
+func getWebSocketEndpoint() string {
+	if webSocketEndpoint == "" {
+		rpcHost := os.Getenv("HUBBLE_RPC_HOST")
+		if rpcHost == "" {
+			panic("HUBBLE_RPC_HOST environment variable not set")
+		}
+		blockchainID := os.Getenv("HUBBLE_BLOCKCHAIN_ID")
+		if rpcHost == "" {
+			panic("HUBBLE_BLOCKCHAIN_ID environment variable not set")
+		}
+		path := fmt.Sprintf("/ext/bc/%s/ws", blockchainID)
+		websocketURL := url.URL{Scheme: "wss", Host: rpcHost, Path: path}
+		webSocketEndpoint = websocketURL.String()
+	}
+
+	return webSocketEndpoint
 }
