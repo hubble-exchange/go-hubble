@@ -1,4 +1,4 @@
-package main
+package gohubble
 
 import (
 	"crypto/ecdsa"
