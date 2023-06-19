@@ -54,9 +54,10 @@ func (c *HubbleClient) WithTrader(privateKey string) *HubbleClient {
 	}
 
 	return &HubbleClient{
-		rpcEndpoint:   c.rpcEndpoint,
-		privateKey:    privateKeyECDSA,
-		publicAddress: publicAddress,
+		rpcEndpoint:       c.rpcEndpoint,
+		websocketEndpoint: c.websocketEndpoint,
+		privateKey:        privateKeyECDSA,
+		publicAddress:     publicAddress,
 	}
 }
 
