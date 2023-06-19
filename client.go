@@ -1,4 +1,4 @@
-package hubble
+package main
 
 import (
 	"bytes"
@@ -6,9 +6,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"math/big"
 	"math/rand"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"time"
@@ -16,6 +18,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/gorilla/websocket"
 	"github.com/hubble-exchange/go-hubble/contracts"
 )
 
@@ -24,20 +27,30 @@ const CHAIN_ID = 321123
 var hubbleClient *HubbleClient
 
 type HubbleClient struct {
-	rpcEndpoint   string
-	privateKey    *ecdsa.PrivateKey
-	publicAddress common.Address
+	rpcEndpoint       string
+	websocketEndpoint string
+	privateKey        *ecdsa.PrivateKey
+	publicAddress     common.Address
 }
 
 func GetHubbleClient() *HubbleClient {
 	if hubbleClient == nil {
-		rpcEndpoint := os.Getenv("RPC_ENDPOINT")
-		if rpcEndpoint == "" {
-			panic("RPC_ENDPOINT environment variable not set")
+		rpcHost := os.Getenv("HUBBLE_RPC_HOST")
+		if rpcHost == "" {
+			panic("HUBBLE_RPC_HOST environment variable not set")
 		}
+		blockchainID := os.Getenv("HUBBLE_BLOCKCHAIN_ID")
+		if rpcHost == "" {
+			panic("HUBBLE_BLOCKCHAIN_ID environment variable not set")
+		}
+		path := fmt.Sprintf("/ext/bc/%s/rpc", blockchainID)
+		rpcURL := url.URL{Scheme: "https", Host: rpcHost, Path: path}
 
+		path = fmt.Sprintf("/ext/bc/%s/ws", blockchainID)
+		websocketURL := url.URL{Scheme: "wss", Host: rpcHost, Path: path}
 		hubbleClient = &HubbleClient{
-			rpcEndpoint: rpcEndpoint,
+			rpcEndpoint:       rpcURL.String(),
+			websocketEndpoint: websocketURL.String(),
 		}
 
 	}
@@ -216,6 +229,46 @@ func (c *HubbleClient) CancelOrderById(orderId common.Hash) error {
 	}
 
 	return c.CancelOrders([]Order{order})
+}
+
+func (client *HubbleClient) SubscribeToOrderBookDepth(market int) (chan TradingOrderBookDepthUpdateResponse, *websocket.Conn, error) {
+	c, _, err := websocket.DefaultDialer.Dial(client.websocketEndpoint, nil)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to connect to websocket endpoint - err: %s", err)
+	}
+
+	msg := Message{
+		Jsonrpc: "2.0",
+		ID:      1,
+		Method:  "trading_subscribe",
+		Params:  []interface{}{"streamDepthUpdateForMarket", market},
+	}
+
+	err = c.WriteJSON(msg)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to write message to websocket - err: %s", err)
+	}
+
+	respChan := make(chan TradingOrderBookDepthUpdateResponse)
+
+	go func() {
+		defer close(respChan)
+		defer c.Close()
+
+		for {
+			var resp WebsocketResponse
+
+			err := c.ReadJSON(&resp)
+			if err != nil {
+				log.Fatalf("error reading websocket message: %v", err)
+				return
+			}
+
+			respChan <- resp.Params.Result
+		}
+	}()
+
+	return respChan, c, nil
 }
 
 func (c *HubbleClient) makeRPCRequest(requestBody map[string]interface{}) (*APIResponse, error) {

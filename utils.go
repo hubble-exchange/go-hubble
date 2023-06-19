@@ -1,4 +1,4 @@
-package hubble
+package main
 
 import (
 	"crypto/ecdsa"

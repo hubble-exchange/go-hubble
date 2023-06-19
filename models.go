@@ -1,4 +1,4 @@
-package hubble
+package main
 
 import (
 	"math/big"
@@ -22,30 +22,18 @@ type Order struct {
 }
 
 type OrderStatusResponse struct {
-	AvgPrice      string   `json:"avgPrice"`
-	ClientOrderID string   `json:"clientOrderId"`
-	CumQuote      string   `json:"cumQuote"`
-	ExecutedQty   string   `json:"executedQty"`
-	OrderID       string   `json:"orderId"`
-	OrigQty       string   `json:"origQty"`
-	OrigType      string   `json:"origType"`
-	Price         string   `json:"price"`
-	ReduceOnly    bool     `json:"reduceOnly"`
-	Side          string   `json:"side"`
-	PositionSide  string   `json:"positionSide"`
-	Status        string   `json:"status"`
-	StopPrice     string   `json:"stopPrice"`
-	ClosePosition bool     `json:"closePosition"`
-	Symbol        int64    `json:"symbol"`
-	Time          int64    `json:"time"`
-	TimeInForce   string   `json:"timeInForce"`
-	Type          string   `json:"type"`
-	ActivatePrice string   `json:"activatePrice"`
-	PriceRate     string   `json:"priceRate"`
-	UpdateTime    int64    `json:"updateTime"`
-	WorkingType   string   `json:"workingType"`
-	PriceProtect  bool     `json:"priceProtect"`
-	Salt          *big.Int `json:"salt"`
+	ExecutedQty  string   `json:"executedQty"`
+	OrderID      string   `json:"orderId"`
+	OrigQty      string   `json:"origQty"`
+	Price        string   `json:"price"`
+	ReduceOnly   bool     `json:"reduceOnly"`
+	PositionSide string   `json:"positionSide"`
+	Status       string   `json:"status"`
+	Symbol       int64    `json:"symbol"`
+	Time         int64    `json:"time"`
+	Type         string   `json:"type"`
+	UpdateTime   int64    `json:"updateTime"`
+	Salt         *big.Int `json:"salt"`
 }
 
 type TradingOrderBookDepthResponse struct {
@@ -75,4 +63,27 @@ type GetPositionsResponse struct {
 	Margin         string           `json:"margin"`
 	ReservedMargin string           `json:"reservedMargin"`
 	Positions      []TraderPosition `json:"positions"`
+}
+
+type Message struct {
+	Jsonrpc string        `json:"jsonrpc"`
+	ID      int           `json:"id"`
+	Method  string        `json:"method"`
+	Params  []interface{} `json:"params"`
+}
+
+type WebsocketResponse struct {
+	Jsonrpc string `json:"jsonrpc"`
+	Method  string `json:"method"`
+	Params  struct {
+		Subscription string                              `json:"subscription"`
+		Result       TradingOrderBookDepthUpdateResponse `json:"result"`
+	}
+}
+
+type TradingOrderBookDepthUpdateResponse struct {
+	T      int64      `json:"T"`
+	Symbol int64      `json:"s"`
+	Bids   [][]string `json:"b"`
+	Asks   [][]string `json:"a"`
 }

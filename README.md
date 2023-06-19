@@ -1,9 +1,10 @@
 # Go SDK for Hubble Exchange
 
-Requires RPC_ENDPOINT environment variable to be set
+Requires HUBBLE_RPC_HOST and HUBBLE_BLOCKCHAIN_ID environment variable to be set
 
 ```shell
-export RPC_ENDPOINT=https://candy-hubblenet-rpc.hubble.exchange/ext/bc/iKMFgo49o4X3Pd3UWUkmPwjKom3xZz3Vo6Y1kkwL2Ce6DZaPm/rpc
+export HUBBLE_RPC_HOST=candy-hubblenet-rpc.hubble.exchange
+export HUBBLE_BLOCKCHAIN_ID=iKMFgo49o4X3Pd3UWUkmPwjKom3xZz3Vo6Y1kkwL2Ce6DZaPm
 ```
 
 ### Example usage:
@@ -32,4 +33,11 @@ err = client.CancelOrders([]Order{order})
 
 // cancel order by id
 err = client.CancelOrderById(order.Id)
+
+// subscribe to order book updates
+respChan, _, err := client.SubscribeToOrderBookDepth(0)
+for resp := range respChan {
+    // Implement your logic to handle the response
+    fmt.Println(resp)
+}
 ```
