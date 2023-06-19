@@ -7,7 +7,7 @@ export HUBBLE_RPC_HOST=candy-hubblenet-rpc.hubble.exchange
 export HUBBLE_BLOCKCHAIN_ID=iKMFgo49o4X3Pd3UWUkmPwjKom3xZz3Vo6Y1kkwL2Ce6DZaPm
 ```
 
-### Example usage:
+## Example usage:
 
 ```go
 import hubble "github.com/hubble-exchange/go-hubble"
@@ -41,3 +41,10 @@ for resp := range respChan {
     fmt.Println(resp)
 }
 ```
+
+## Response structures
+
+- [OrderStatusResponse](https://github.com/hubble-exchange/go-hubble/blob/main/models.go#L24)
+- [OrderBookDepthResponse](https://github.com/hubble-exchange/go-hubble/blob/main/models.go#L39)
+- [GetPositionsResponse](https://github.com/hubble-exchange/go-hubble/blob/main/models.go#L62)
+- [OrderBookDepthUpdateResponse](https://github.com/hubble-exchange/go-hubble/blob/main/models.go#L84)

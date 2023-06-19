@@ -75,7 +75,7 @@ func (c *HubbleClient) WithTrader(privateKey string) *HubbleClient {
 	}
 }
 
-func (c *HubbleClient) GetOrderBook(market Market) (*TradingOrderBookDepthResponse, error) {
+func (c *HubbleClient) GetOrderBook(market Market) (*OrderBookDepthResponse, error) {
 	requestBody := map[string]interface{}{
 		"jsonrpc": "2.0",
 		"id":      1,
@@ -88,7 +88,7 @@ func (c *HubbleClient) GetOrderBook(market Market) (*TradingOrderBookDepthRespon
 		return nil, err
 	}
 
-	orderBookResponse := TradingOrderBookDepthResponse{}
+	orderBookResponse := OrderBookDepthResponse{}
 	err = decodeResponse(apiResponse, &orderBookResponse)
 	if err != nil {
 		return nil, fmt.Errorf("failed to decode response - err: %s", err)
@@ -231,7 +231,7 @@ func (c *HubbleClient) CancelOrderById(orderId common.Hash) error {
 	return c.CancelOrders([]Order{order})
 }
 
-func (client *HubbleClient) SubscribeToOrderBookDepth(market int) (chan TradingOrderBookDepthUpdateResponse, *websocket.Conn, error) {
+func (client *HubbleClient) SubscribeToOrderBookDepth(market int) (chan OrderBookDepthUpdateResponse, *websocket.Conn, error) {
 	c, _, err := websocket.DefaultDialer.Dial(client.websocketEndpoint, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to connect to websocket endpoint - err: %s", err)
@@ -249,7 +249,7 @@ func (client *HubbleClient) SubscribeToOrderBookDepth(market int) (chan TradingO
 		return nil, nil, fmt.Errorf("failed to write message to websocket - err: %s", err)
 	}
 
-	respChan := make(chan TradingOrderBookDepthUpdateResponse)
+	respChan := make(chan OrderBookDepthUpdateResponse)
 
 	go func() {
 		defer close(respChan)

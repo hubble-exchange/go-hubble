@@ -36,7 +36,7 @@ type OrderStatusResponse struct {
 	Salt         *big.Int `json:"salt"`
 }
 
-type TradingOrderBookDepthResponse struct {
+type OrderBookDepthResponse struct {
 	LastUpdateID int        `json:"lastUpdateId"`
 	E            int64      `json:"E"`
 	T            int64      `json:"T"`
@@ -46,7 +46,7 @@ type TradingOrderBookDepthResponse struct {
 
 type Market int64
 
-type TraderPosition struct {
+type Position struct {
 	Market               Market `json:"market"`
 	OpenNotional         string `json:"openNotional"`
 	Size                 string `json:"size"`
@@ -60,9 +60,9 @@ type TraderPosition struct {
 }
 
 type GetPositionsResponse struct {
-	Margin         string           `json:"margin"`
-	ReservedMargin string           `json:"reservedMargin"`
-	Positions      []TraderPosition `json:"positions"`
+	Margin         string     `json:"margin"`
+	ReservedMargin string     `json:"reservedMargin"`
+	Positions      []Position `json:"positions"`
 }
 
 type Message struct {
@@ -76,12 +76,12 @@ type WebsocketResponse struct {
 	Jsonrpc string `json:"jsonrpc"`
 	Method  string `json:"method"`
 	Params  struct {
-		Subscription string                              `json:"subscription"`
-		Result       TradingOrderBookDepthUpdateResponse `json:"result"`
+		Subscription string                       `json:"subscription"`
+		Result       OrderBookDepthUpdateResponse `json:"result"`
 	}
 }
 
-type TradingOrderBookDepthUpdateResponse struct {
+type OrderBookDepthUpdateResponse struct {
 	T      int64      `json:"T"`
 	Symbol int64      `json:"s"`
 	Bids   [][]string `json:"b"`
