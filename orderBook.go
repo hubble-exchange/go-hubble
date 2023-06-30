@@ -20,11 +20,7 @@ func placeOrder(txOptions *bind.TransactOpts, order contracts.IOrderBookOrder) (
 		return common.Hash{}, err
 	}
 
-	orderHash_, err := instance.GetOrderHash(&bind.CallOpts{}, order)
-	if err != nil {
-		return common.Hash{}, err
-	}
-	orderHash := common.Hash(orderHash_)
+	orderHash := GetOrderHash(order)
 	_, err = instance.PlaceOrder(txOptions, order)
 	if err != nil {
 		return orderHash, err

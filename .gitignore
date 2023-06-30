@@ -25,3 +25,5 @@ go-hubble
 abigen
 
 main.go
+
+local/*
